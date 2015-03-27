@@ -1,0 +1,101 @@
+<?php
+
+$CONFIG['APIS'] = array(
+  // mysql apis
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null,
+    'path_param' => null,
+    'url_params' => array("login", "password"), // user?login=&password=
+    'name' => "verify_user_password"
+    ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/sso_attributes/',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null,
+    'path_param' => "login",
+    'url_params' => null,
+    'name' => "sso_attributes"
+    ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/',
+    'method' => 'post',
+    'headers' => array("Content-Type"  => "application/x-www-form-urlencoded"),
+    'body_params' => array("login","password"),
+    'path_param' => null,
+    'url_params' => null,
+    'name' => "verify_user_password_post"
+    ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/pronote/',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null, //post or put
+    'path_param' => "login",   //example user/(id)  only one parameter
+    'url_params' => null, // user?login=&password=
+    'name' => "sso_attributes_pronote"
+    ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/query/users',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null, // only post or put
+    'path_param' => null,   //example user/(id)  only one parameter
+    'url_params' => array("columns", "where[email.adresse]"),
+    ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/sso_attributes_men/',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null,
+    'path_param' => "login",
+    'url_params'=>null,
+    'name' => "sso_attributes_men"
+  ),
+
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/agents',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null, //only post or put
+    'path_param' => null,   //example user/(id)  only one parameter
+    'url_params' => array("email"), //columns = "nom, prenom, login"
+    'name' => "Search_Agent_By_Instmail",
+    ),
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/parents',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null, //only post or put
+    'path_param' => null,   //example user/(id)  only one parameter
+    'url_params' => array("nom", "prenom","id_sconet"), // nom and prenom are optionals, sconet_id is mandatory
+    'name' => "Search_Parent_By_Name_EleveSconetId",
+    ),
+  array(
+    'url' => '{{ laclasse_annuaire_sso_api_url }}/eleves',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null,
+    'path_param' => null,
+    'url_params' => array("nom", "prenom", "id_sconet"), //columns = "nom, prenom, login, date_naissance, code_postal" id_sconet
+    'name' => "Search_Eleve_By_Name_SconetId",
+    ),
+  array(
+    'url' => '{{ laclasse_annuaire_user_api_url }}info',
+    'method' => 'get',
+    'headers' => null,
+    'body_params' => null,
+    'path_param' => "login",   // user/info/:login
+    'url_params' => null, //
+    'name' => "info",
+    )
+);
+

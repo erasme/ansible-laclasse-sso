@@ -1,0 +1,154 @@
+- debug: var=laclasse
+
+- name: Installs git
+  apt: pkg=git state=latest
+
+- name: Creates deploy user
+  user: name={{ laclasse_sso_deploy_user }} comment="Service sso user"
+  notify: Restart php5-fpm
+
+- name: Creates deploy directory
+  file:
+    path=~{{ laclasse_sso_deploy_user }}/sso/
+    owner={{ laclasse_sso_deploy_user }}
+    state=directory
+  notify: Restart php5-fpm
+
+- name: Checkout app
+  sudo_user: "{{ laclasse_sso_deploy_user }}"
+  sudo: true
+  git:
+    repo={{ laclasse_sso_repos }}
+    dest=~{{ laclasse_sso_deploy_user }}/sso/
+    version={{ laclasse_sso_version }}
+    accept_hostkey=true
+  register: new_version
+
+- name: Gets current tag
+  shell: cd ~{{ laclasse_sso_deploy_user }}/sso/ && git describe --always --tag
+  changed_when: false
+  register: git_tag
+
+- debug: var=git_tag.stdout
+
+- name: Installs rediska pear channel
+  shell: pear channel-discover pear.geometria-lab.net
+  register: pear_channel
+  changed_when: '"is already initialized" not in pear_channel.stdout'
+  failed_when: false
+  tags: pear
+
+- name: Installs rediska
+  shell: pear install geometria-lab/Rediska-beta
+  when: pear_channel|changed
+  register: pear_install
+  changed_when: '"is already installed" not in pear_install.stdout'
+  failed_when: false
+  notify: Restart php5-fpm
+  tags: pear
+
+- name: Adds version.json
+  sudo_user: "{{ laclasse_sso_deploy_user }}"
+  sudo: true
+  template:
+    src="../templates/version.json.j2"
+    dest="~{{ laclasse_sso_deploy_user }}/sso/version.json"
+
+- debug: var=laclasse_sso_cas_allowed
+
+- name: Deploys configs
+  sudo_user: "{{ laclasse_sso_deploy_user }}"
+  sudo: true
+  template:
+    src="../templates/{{ item }}.j2"
+    dest=~{{ laclasse_sso_deploy_user }}/sso/{{ item }}
+  with_items:
+    - config.inc.php
+    - config.inc.api.php
+    - config.inc.sites.php
+  tags: laclasse:config
+
+- name: Deploys sso and saml configs
+  template:
+    src="../templates/{{ item }}.conf.j2"
+    dest="/etc/nginx/sites-available/{{inventory_hostname}}_laclasse-{{ item }}.conf"
+  notify: Restart nginx
+  with_items:
+    - sso
+    - saml
+  tags:
+    - nginx
+    - laclasse:saml
+
+- name: Symlinks configs
+  file:
+    src=/etc/nginx/sites-available/{{inventory_hostname}}_laclasse-{{ item }}.conf
+    dest=/etc/nginx/sites-enabled/laclasse-{{ item }} state=link
+    backup=yes
+  notify: Restart nginx
+  with_items:
+    - sso
+    - saml    
+  tags:
+    - nginx
+
+- name: Deploys saml fastcgi_params
+  template:
+    src="../templates/fastcgi_saml_params.j2"
+    dest="/etc/nginx/fastcgi_saml_params"
+  notify: Restart nginx
+  tags:
+    - nginx
+    - laclasse:saml
+
+- name: Deploys saml config
+  template:
+    src="../templates/saml_config.php.j2"
+    dest="{{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/config/config.php"
+    backup=yes
+  notify: Restart nginx
+  tags:
+    - laclasse:saml
+
+- name: Show cert
+  debug: var=laclasse_certificate
+  tags:
+    - cert
+
+- name: Deploys certificate
+  template:
+    src="../templates/laclasse.com.chain.cer.j2"
+    dest="{{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/cert/laclasse.com.chain.cer"
+  tags:
+    - laclasse:cert
+
+- name: Gets current tag
+  shell: cd ~{{ laclasse_sso_deploy_user }}/sso/ && git describe --always --tag
+  changed_when: false
+  register: git_tag
+
+- debug: var=git_tag.stdout
+
+- name: Check if firewall is opened for sso
+  shell: iptables-save
+  register: needs_iptables_sso
+  changed_when: needs_iptables_sso.stdout.find("laclasse-sso") == -1
+
+- name: Check if firewall is opened for saml
+  shell: iptables-save
+  register: needs_iptables_saml
+  changed_when: needs_iptables_saml.stdout.find("laclasse-saml") == -1
+
+- name: Open sso firewall
+  shell: iptables -I INPUT -p tcp -m tcp --dport {{ laclasse_sso_port }} -j ACCEPT -m comment --comment laclasse-sso
+  when: needs_iptables_sso | changed
+
+- name: Open saml firewall
+  shell: iptables -I INPUT -p tcp -m tcp --dport {{ simplesaml_port }} -j ACCEPT -m comment --comment laclasse-saml
+  when: needs_iptables_saml | changed 
+
+- name: Saves firewall
+  shell: iptables-save > {{ firewall_rules_file }}
+  when: firewall_rules_file is defined and (needs_iptables_sso | changed or needs_iptables_saml | changed)
+
+- set_fact: check_port={{ laclasse_sso_port }}

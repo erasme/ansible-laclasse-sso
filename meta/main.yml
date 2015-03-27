@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Michel Blanc
+  description: laclasse-sso role
+  company: ERASME/Grand-Lyon Métropole
+  license: MIT
+  min_ansible_version: 1.8
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+      - all
+  categories:
+    - development
+
+dependencies:
+  - role: erasme.php5-fpm
+  - role: erasme.simplesaml

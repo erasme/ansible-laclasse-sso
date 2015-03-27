@@ -1,0 +1,91 @@
+<?php
+//------------------------------------------------------------------------------
+// Services autorisés à s'authentifier avec le service CAS.
+//------------------------------------------------------------------------------
+/*******************************************************************************
+ Site allowed to use this CAS server for authentication
+  @param AUTHORIZED_SITES Array of authorized sites. Each authorized site is itself an associative array
+  having the following keys : sitename, url and authorizedAttributes which respectively contain the site name, the site URL
+  and the attributes that the site will get in serviceValidate.
+
+ Structure of $CONFIG['AUTHORIZED_SITES'] :
+ sitename : this is the short name of the site you need to authenticate via this CAS server.
+
+ url    : Contains the url of the servie that is authorized to authenticate ith your CAS server.
+      This parameter accepts wilcards.
+      "http*://mysurpersite.com/*" will authorize both http and https urls
+      and all the virtual pathes under the site's root.
+
+  having the following keys : sitename, url and authorizedAttributes which respectively contain the site name, the site URL
+  and the attributes that the site will get in serviceValidate.
+
+ Structure of $CONFIG['AUTHORIZED_SITES'] :
+ sitename : this is the short name of the site you need to authenticate via this CAS server.
+
+ url    : Contains the url of the servie that is authorized to authenticate ith your CAS server.
+      This parameter accepts wilcards.
+      "http*://mysurpersite.com/*" will authorize both http and https urls
+      and all the virtual pathes under the site's root.
+
+  @param AUTHORIZED_SITES Array of authorized sites. Each authorized site is itself an associative array
+  having the following keys : sitename, url and authorizedAttributes which respectively contain the site name, the site URL
+  and the attributes that the site will get in serviceValidate.
+
+ Structure of $CONFIG['AUTHORIZED_SITES'] :
+ sitename : this is the short name of the site you need to authenticate via this CAS server.
+
+ url    : Contains the url of the servie that is authorized to authenticate ith your CAS server.
+      This parameter accepts wilcards.
+      "http*://mysurpersite.com/*" will authorize both http and https urls
+      and all the virtual pathes under the site's root.
+
+ allowedAttributes : these are the attributes that are passed in token after service validate.
+             The names MUST match with the names in the attributes Provider.
+             For example, in the attributes provider is a database, you need to match the names of SQL statement
+             with the attributes list in $CONFIG['AUTHORIZED_SITES'] array.
+             In the case (SQL request attributes proveider), your SQL request should return ONE rows.
+             The multivalued attributes should appear in one line separated by comma and encapsulated
+             with double quotes.
+
+ tokenModel    : By default the model of the token is CAS conpliant (Great !)
+
+           <cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+            <cas:authenticationSuccess>
+                <cas:user>[Here is the login the user entered]</cas:user>
+                <Some other attributes you defined />
+            </cas:authenticationSuccess>
+          </cas:serviceResponse>
+          You can define your own token model for attributes by defining the 'tokenModel' key.
+          In this case the custom model is only available for the site for which it is defined.
+          2 rules you have to respect to define your custo model :
+            1. the name of the model must be unique
+            2. the model 'my_custom_model' must match with the name of the view you will code and
+               the file is located in '/views/my_custom_model.php'
+            3. This file must contain the function 'view_my_custom_model'.
+
+          Keep in mind that the header and the footer of the token are unchanged.
+
+ attributesProvider : This is a constant you define in this config file containing  :
+            - the SQL request for the DB backend of the service
+            - the LDAP request for the LDAP backend of the service
+            - ...
+*************************************************************************************/
+$CONFIG['AUTHORIZED_SITES'] = array (
+{% for allowed in laclasse_sso_cas_allowed %}
+  array(
+      'sitename'             => '{{allowed.sitename}}',
+      'url'                  => array (
+{% for u in allowed.url %}
+        '{{ u }}',
+{% endfor %}
+      ),
+      'allowedAttributes'    => '{{ allowed.allowed_attributes }}',
+{% if 'authentication_method' in allowed %}
+      'authenticationMethod' => '{{ allowed.authentication_method }}',
+{% endif %}
+{% if 'attributes_provider' in allowed %}
+      'attributesProvider' => {{ allowed.attributes_provider }},
+{% endif %}      
+  ),
+{% endfor %}
+);

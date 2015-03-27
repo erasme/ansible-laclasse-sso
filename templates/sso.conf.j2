@@ -1,0 +1,77 @@
+# -*- mode: nginx; -*-
+
+# Nginx conf for laclasse-srevice-sso
+# Uses php5-fpm
+#
+# {{ ansible_managed }}
+#
+server {
+  listen   {{ laclasse_sso_port }}; ## listen for ipv4; this line is default and implied
+
+  root /home/{{ laclasse_sso_deploy_user }}/sso/ ;
+  index index.php index.html index.htm;
+
+  access_log /var/log/nginx/laclasse-sso.access.log;
+  error_log /var/log/nginx/laclasse-sso.error.log;
+
+  # Make site accessible from http://localhost/
+  server_name _;
+
+  rewrite_log off;
+ 
+  chunked_transfer_encoding off;
+
+  # First, strip {{ laclasse_sso_baseurl }} in URLs
+  location {{ laclasse_sso_baseurl }} {
+    rewrite ^{{ laclasse_sso_baseurl }}(.*) /$1;
+  }
+  # Then try to find corresponding file (assets)
+  # If no file is found, head to the action @rewriter
+  location / {
+    try_files $uri $uri/ @rewriter;
+  }
+  # Rewrite URI so it becomes the action
+  location @rewriter {
+    rewrite ^/(.*) /index.php?action=$1;
+  }
+
+  error_page 404 /404.html;
+
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root {{ nginx_root }};
+  }
+
+  location ~ \/sso\/lib\/.*\.php$ {
+    root /home/erasme/ ;
+    try_files $uri =404;
+    fastcgi_split_path_info ^(.+\.php)(.*)$;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME /home/erasme/$fastcgi_script_name;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+
+
+  # Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+  # Re-add proper path for script /home/sso/sso/
+  location ~ \.php$ {
+    try_files $uri =404;
+#    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_split_path_info ^(.+\.php)(.*)$;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+#    fastcgi_param SCRIPT_FILENAME /home/{{ laclasse_sso_deploy_user }}/sso/index.php/;
+    fastcgi_param SCRIPT_FILENAME /home/{{ laclasse_sso_deploy_user }}/sso/$fastcgi_script_name;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+
+  # deny access to .htaccess files, if Apache's document root
+  # concurs with nginx's one
+  #
+  location ~ /\.ht {
+    deny all;
+  }
+}

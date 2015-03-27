@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * @file config.inc.php
+ * Server configuration directives
+ *
+ * @defgroup confdir Configuration Directives
+ * Configuration directives for CAS server
+ * @{
+ */
+
+include_once('config.inc.api.php');
+// include_once('config.inc.mysql.php');
+include_once('config.inc.sites.php');
+
+{% import 'macros/url.j2' as url with context %}
+
+
+/**
+ * Absolute path to your CAS install directory.
+ */
+define('CAS_PATH', '/home/{{ laclasse_sso_deploy_user }}/sso/');
+define('SimpleSamlPATH', '{{ simplesaml_install_directory }}/simplesamlphp-{{ simplesaml_version }}/lib');
+define('ENT_SERVER', '{{ laclasse_main_url }}');
+
+#define('CAS_URL', '{{ laclasse_main_url }}/{{ laclasse_sso_baseurl }} | regex_replace('\/+$', "")');
+# Let's get a proper url, without double-slashes
+#define('CAS_URL', '{{ "%s/%s"|format(laclasse_main_url, laclasse_sso_baseurl) | regex_replace("\/+", "/") | regex_replace(":\/", "://") | regex_replace("\/$", "")}}' );
+
+define('CAS_URL', '{{ url.trim_trailing_slashes(url.dedup_slashes(laclasse_main_url, laclasse_sso_baseurl)) }}' );
+
+define('SERVICE', ENT_SERVER . 'portail/login');
+define('INSCRIPTION_URL', ENT_SERVER . 'inscription-tbd/');
+
+/*
+  Server mode
+ * @param MODE
+ *  - 'dev'   : http protocol allowed
+ *  - 'prod'  : https required
+ *  - 'debug' : 'dev' mode plus debug info display
+ */
+$CONFIG['MODE'] = '{{ laclasse_sso_mode }}';
+
+/** CAS protocol compatibility
+ * @param CAS_VERSION Possible values are : 1.0, 2.0.
+ * @note Not used ATM
+ */
+$CONFIG['CAS_VERSION'] = '2.0';
+//-------------------------------------------------------------------
+// DATABASE BACKEND TYPE Only supports oracle and mysql
+//-------------------------------------------------------------------
+$CONFIG['DATABASE'] = 'WEBAPI';
+
+//-------------------------------------------------------------------
+//  Profile Parent Eleve Metadata name  in /simplesamlphp/config authSource.php
+$CONFIG['PARENT_ELEVE_SOURCE'] = 'parents-portal';
+
+// Profile Agent Metadata name in /simplesamlphp/config authSource.php
+$CONFIG['AGENT_SOURCE'] = 'agents-portal';
+
+/****** Debugging****/
+$CONFIG['DEBUG_LEVEL'] = {{ laclasse_sso_log_level }}; //Values DEBUG  = 1;DEBUG// Most Verbose
+           //INFO      = 2;INFO// ...
+           //WARN      = 3;WARN// ...
+           //ERROR   = 4;ERROR// ...
+           //FATAL   = 5;FATAL// Least Verbose
+           //OFF   = 6;  //no log
+$CONFIG['DEBUG_FILE'] = '{{ laclasse_sso_log_file }}';
+//----------------------------------------------------------------------
+
+/** Redis server array
+ * Redis is the datastorage for versions above 1.1
+ * @param REDIS_SERVERS Array of servers. Each server is an array of (host, port).
+ * Thus, REDIS_SERVERS contains an array of arrays. It is looped over
+ * and each entry is as parameter to
+ * Rediska::addServer
+ * @param REDIS_ROOT String containing the base root for ALL Redis get/set operations
+ * related to ticket handling.
+ */
+$CONFIG['REDIS_SERVERS'] = array(array('{{ laclasse_redis_server }}', {{ laclasse_redis_port }}));
+#$CONFIG['REDIS_SERVERS'] = array(array('localhost', 6379));
+$CONFIG['REDIS_ROOT'] = '{{ laclasse_sso_redis_root }}';
+
+/** Twitter client config
+ * @param DISPLAY_NEWS
+ * @param TWITTER_ACCOUNT String prefixed with @ containing the account to use on twitter
+ * (e.g.@laclasse)
+ * @param TWITTER_HASHTAG String with the hashtag we're looking for, prefixed with #
+ * (e.g. '#sys')
+ * @param REDIS_NEWS_ROOT The enws root we use for the twitter service
+ * This param overrides $CONFIG['REDIS_ROOT']
+ * See if we have to display news on the authentication form
+ * The news are feeded by a twitter account
+ */
+
+/**
+ * See if we have to display news on the authentication form
+ * The news are feeded by a twitter account
+*/
+$CONFIG['DISPLAY_NEWS'] = {{ laclasse_sso_display_news }};
+$CONFIG['TWITTER_ACCOUNT'] = '{{ laclasse_sso_twitter_account }}';
+$CONFIG['TWITTER_HASHTAG'] = '{{ laclasse_sso_twitter_hashtag }}';
+$CONFIG['TWITTER_CONSUMER_KEY'] = '{{ laclasse_sso_twitter_consumer_key }}';
+$CONFIG['TWITTER_CONSUMER_SECRET'] ='{{ laclasse_sso_twitter_consumer_secret }}';
+$CONFIG['TWITTER_OAUTH_TOKEN'] ='{{ laclasse_sso_twitter_oauth_token }}';
+$CONFIG['TWITTER_OAUTH_SECRET'] = '{{ laclasse_sso_twitter_oauth_secret }}';
+$CONFIG['REDIS_NEWS_ROOT'] = '{{ laclasse_sso_redis_news_root }}';
+
+/**
+ *  Timeout in second for each kind of ticket
+ *  LT for LoginTicket : The timeout shouldbe very short. It should not be over 4 minutes.
+ *  ST for ServiceTicket : Could be short too because it  is a one shot ticket that have to
+ *               be validated : 4 minutes for example
+ *  ST for TicketGrantingTicket : Could be long : 8 hours for example
+*/
+
+$CONFIG['LT_TIMOUT']  = 4*60;
+$CONFIG['ST_TIMOUT']  = 4*60;
+$CONFIG['TGT_TIMOUT'] = 8*60*60;
+
+/**
+ *     Logging and tracker config
+ * The logging format is as follows (All field are Tab separated):
+ *     CODE USERNAME IP DATE
+ * Available codes are :
+ * => LOGIN_SUCCESS
+ * => LOGIN_FAILURE
+ * => LOGOUT_SUCCESS
+ * => TRACKING_ALERT
+*/
+
+$CONFIG['ACTIVATE_TRACKING']  = false;
+// Array of tracked users : usernames have to be uppercased
+$CONFIG['TRACKED_USERS']  = array();
+// Sending mail alert ?
+$CONFIG['SEND_ME_A_MAIL']  = true;
+// Mail of admin who need to receive the tracking alert
+$CONFIG['MAIL_ADMIN']  = "{{ laclasse_admin_email }}";
+
+/*
+ * Authentication backend
+ */
+
+include_once('lib/authentication.php');
+
+//------------------------------------------------------------------------------
+//Constantes de connexion avec WEBAPI
+//------------------------------------------------------------------------------
+/** Url for mysql apis */
+define('BACKEND_DBNAME', '{{ laclasse_main_url }}');
+/** Fake secret key */
+define('BACKEND_DBUSER', 'foobar');
+/** API access key */
+define('BACKEND_DBPASS',"{{ laclasse_sso_secret_key }}");
+
+
+

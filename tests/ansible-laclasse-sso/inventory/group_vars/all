@@ -1,0 +1,45 @@
+
+laclasse_redis_server: localhost
+laclasse_redis_port: 6379
+
+laclasse_slack:
+  host: localhost
+  token: none
+  channel: none
+
+laclasse_admin_email: some@admin.org
+
+laclasse_annuaire_sso_api_url: '/api/sso'
+laclasse_cookie_domain: laclasse.com
+
+laclasse_main_domain: "www.laclasse.com"
+
+# laclasse-sso specific variables
+laclasse_sso_baseurl: '/sso'
+laclasse_sso_cas_allowed:
+  - sitename: 'Test' 
+    url:
+      - '*://192.168.0.31*/*'
+      - '*://test.laclasse.com/*'
+    allowed_attributes: 'login,nom,prenom,dateNaissance,codePostal,categories'
+    attributes_provider: SQL_FOR_PRONOTE
+    authentication_method: dafuq
+laclasse_sso_deploy_user: someuser
+laclasse_sso_display_news: true
+laclasse_sso_mode: 'dev'
+# Debug level & file
+laclasse_sso_log_file: /tmp/log-sso.txt
+laclasse_sso_log_level: 5
+laclasse_sso_path: '/'
+laclasse_sso_port: 9292
+laclasse_sso_redis_news_root: 'someredispath'
+laclasse_sso_redis_root: 'someredispath'
+laclasse_sso_repos: https://github.com/laclasse-com/php-cas-server.git
+laclasse_sso_twitter:
+  account: '@someaccount'
+  hashtag: '#somehashtag'
+  consumer_key: 'consumerkey'
+  consumer_secret: 'consumersecret'
+  oauth_token: 'oauthtoken'
+  oauth_secret: 'oauthsecret'
+laclasse_sso_version: '3.3.14'

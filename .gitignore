@@ -1,0 +1,3 @@
+.tags
+tests/ansible-laclasse-sso/playbooks/requirements.yml
+tests/ansible-laclasse-sso/playbooks/

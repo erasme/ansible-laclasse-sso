@@ -1,0 +1,25 @@
+{#
+
+URL related macros
+
+#}
+
+{% macro dedup_slashes() -%}
+  {#
+  Deduplicates slashes in url.
+    - args: list (items will be concatenated with '/')
+    - returns: string (URL with deduplicated slashes)
+    - example: url.dedup_slashes("http://","www.example.org/","/public/","/images/") => "http://www.example.org/public/images/"
+  #}
+{{ varargs | join("/") | regex_replace("\/+", "/") | regex_replace(":\/", "://") }}
+{%- endmacro %}
+
+{% macro trim_trailing_slashes(url) -%}
+  {#
+  Removes trailing slashes in url if any
+    - args: string
+    - returns: string (URL without any trailing slashes)
+    - example: url.trim_trailing_slashes("http://www.example.org/public///") => "http://www.example.org/public"
+  #}
+{{ url | regex_replace("\/+$", "")}}
+{%- endmacro %}

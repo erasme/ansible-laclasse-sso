@@ -1,0 +1,25 @@
+{#
+
+Path related macros
+
+#}
+
+{% macro expand_path() -%}
+  {#
+  Expands path containing ~.
+    - args: list (items will be concatenated with '/')
+    - returns: string (expanded path)
+    - example: text.expand_path("~", "toto", "docs") => /home/toto/docs
+  #}
+{{ varargs | join("/") }}
+{%- endmacro %}
+
+{% macro dedup_slashes() -%}
+  {#
+  Deduplicates slashes in strings (paths).
+    - args: list (items will be concatenated with '/')
+    - returns: string (path with deduplicated slashes)
+    - example: path.dedup_slashes(/public/","/images/") => "/public/images/"
+  #}
+{{ varargs | join("/") | regex_replace("\/+", "/") | regex_replace(":\/", "://") }}
+{%- endmacro %}

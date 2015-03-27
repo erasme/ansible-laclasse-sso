@@ -1,0 +1,25 @@
+- name: Send start notification message via Slack
+  local_action:
+    module: slack
+    domain: "{{ laclasse_slack.host }}"
+    token: "{{ laclasse_slack.token }}"
+    msg: "3...2...1... sso v{{ laclasse_sso_version }} @ {{ inventory_hostname }} :rocket: "
+    channel: "{{ laclasse_slack.channel }}"
+  ignore_errors: true
+  tags:
+    - laclasse
+    - laclasse:sso
+
+- include: sso.yml tags=laclasse,laclasse:sso
+
+- name: Send sucess notification message via Slack
+  local_action:
+    module: slack
+    domain: "{{ laclasse_slack.host }}"
+    token: "{{ laclasse_slack.token }}"
+    msg: "sso (version {{ git_tag.stdout }} successfully deployed on {{ inventory_hostname }} :thumbsup:"
+    channel: "{{ laclasse_slack.channel }}"
+  ignore_errors: true
+  tags:
+    - laclasse
+    - laclasse:sso

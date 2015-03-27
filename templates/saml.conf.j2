@@ -1,0 +1,56 @@
+# -*- mode: nginx; -*-
+
+# Nginx conf for laclasse-service-sso
+# Uses php5-fpm
+#
+# {{ ansible_managed }}
+#
+
+server {
+  listen   {{ simplesaml_port }}; ## listen for ipv4; this line is default and implied
+
+  root {{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/ ;
+  index index.php index.html index.htm;
+
+  access_log /var/log/nginx/laclasse-saml.access.log;
+  error_log /var/log/nginx/laclasse-saml.error.log;
+
+  # Make site accessible from http://localhost/
+  server_name _;
+
+  rewrite_log off;
+
+
+  error_page 404 /404.html;
+
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root {{ nginx_root }};
+  }
+
+  location / {
+    index index.html index.htm index.php;
+  }
+
+  location ~ ^/saml/(.+\.php.*)$ {
+    alias {{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/www/$1;
+    fastcgi_split_path_info ^/saml((?U).+\.php)(/?.*)$;
+
+    fastcgi_pass  unix:/var/run/php5-fpm.sock;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME {{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/www$fastcgi_script_name;    
+    fastcgi_param PATH_INFO       $fastcgi_path_info;
+    fastcgi_param SCRIPT_NAME     /saml$fastcgi_script_name;
+    include       /etc/nginx/fastcgi_saml_params;
+  }
+
+
+  location ~ ^{{ simplesaml_path }}(.*) {
+    alias {{simplesaml_install_directory}}/simplesamlphp-{{simplesaml_version}}/www/$1;
+    index index.php;
+  }
+
+}
+
