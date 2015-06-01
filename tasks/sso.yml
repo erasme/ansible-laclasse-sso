@@ -1,5 +1,3 @@
-- debug: var=laclasse
-
 - name: Installs git
   apt: pkg=git state=latest
 

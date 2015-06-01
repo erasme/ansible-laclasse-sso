@@ -66,7 +66,7 @@ laclasse_sso_mode: 'dev'
 laclasse_sso_log_file: /tmp/log-sso.txt
 laclasse_sso_log_level: 5
 laclasse_sso_path: '/'
-laclasse_sso_port: 9292
+laclasse_sso_port: 42550
 laclasse_sso_redis_news_root: 'someredispath'
 laclasse_sso_redis_root: 'someredispath'
 laclasse_sso_repos: https://github.com/laclasse-com/php-cas-server.git
