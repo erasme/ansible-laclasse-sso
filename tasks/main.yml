@@ -1,3 +1,5 @@
+- include: check_vars.yml tags=laclasse,laclasse:sso
+
 - name: Send start notification message via Slack
   local_action:
     module: slack
