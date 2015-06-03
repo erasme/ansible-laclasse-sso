@@ -65,7 +65,7 @@ server {
 #    fastcgi_param SCRIPT_FILENAME /home/{{ laclasse_sso_deploy_user }}/sso/index.php/;
     fastcgi_param SCRIPT_FILENAME /home/{{ laclasse_sso_deploy_user }}/sso/$fastcgi_script_name;
     fastcgi_index index.php;
-    include fastcgi_params;
+    include /etc/nginx/fastcgi_params;
   }
 
   # deny access to .htaccess files, if Apache's document root
