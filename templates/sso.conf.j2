@@ -23,7 +23,7 @@ server {
 
   # First, strip {{ laclasse_sso_baseurl }} in URLs
   location {{ laclasse_sso_baseurl }} {
-    rewrite ^{{ laclasse_sso_baseurl }}(.*) /$1;
+    rewrite ^{{ laclasse_sso_baseurl }}/+(.*) /$1;
   }
   # Then try to find corresponding file (assets)
   # If no file is found, head to the action @rewriter

@@ -45,7 +45,7 @@ laclasse_certificate_chain: |
 laclasse_cookie_domain: laclasse.com
 
 ## Main server URL
-laclasse_main_url: http://www.example.org
+laclasse_main_url: https://{{ laclasse_main_domain }}/
 
 laclasse_redis_server: 'localhost'
 laclasse_redis_port: 6379
@@ -63,10 +63,14 @@ laclasse_sso_display_news: true
 # 'debug' : 'dev' mode plus debug info display
 laclasse_sso_mode: 'dev'
 # Debug level & file
-laclasse_sso_log_file: /tmp/log-sso.txt
+laclasse_sso_log_dir: "{{ laclasse_log_parent_dir }}/sso/"
 laclasse_sso_log_level: 5
 laclasse_sso_path: '/'
+
+# this is the local internal port (e.g. on the frontend itself)
 laclasse_sso_port: 42550
+# This is the __public__ port
+laclasse_sso_port_external: 443
 laclasse_sso_redis_news_root: 'someredispath'
 laclasse_sso_redis_root: 'someredispath'
 laclasse_sso_repos: https://github.com/laclasse-com/php-cas-server.git

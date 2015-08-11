@@ -52,7 +52,12 @@ laclasse_slack:
   - `laclasse_sso_log_file`: /tmp/log-sso.txt
   - `laclasse_sso_log_level`: 5
   - `laclasse_sso_path`: '/'
-  - `laclasse_sso_port`: 9292
+  - `laclasse_sso_port`: Internal (i.e. nginx front port) http port
+    (default: 42550)
+  - `laclasse_sso_port_internal`: External (i.e. public facing on load balancer)
+    http port (default: 443)
+
+    (default: 42550)
   - `laclasse_sso_redis_root`: 'someredispath'
   - `laclasse_sso_redis_news_root`: 'someredispath'
   - `laclasse_sso_repos`: https://github.com/laclasse-com/php-cas-server.git

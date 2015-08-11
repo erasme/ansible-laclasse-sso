@@ -1,3 +1,6 @@
 - src: erasme.php5-fpm
+  name: ansible-php5-fpm
 - src: erasme.nginx
+  name: ansible-nginx
 - src: erasme.simplesaml
+  name: ansible-simplesaml

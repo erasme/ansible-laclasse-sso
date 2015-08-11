@@ -3,4 +3,5 @@
   when: not {{ item }}
   with_items:
     - laclasse_sso_cas_allowed
-
+    - laclasse_main_domain
+    - laclasse_main_url

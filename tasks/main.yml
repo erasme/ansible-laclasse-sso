@@ -14,7 +14,7 @@
 
 - include: sso.yml tags=laclasse,laclasse:sso
 
-- name: Send sucess notification message via Slack
+- name: Send success notification message via Slack
   local_action:
     module: slack
     domain: "{{ laclasse_slack.host }}"

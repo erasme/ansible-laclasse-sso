@@ -65,7 +65,7 @@ $CONFIG['DEBUG_LEVEL'] = {{ laclasse_sso_log_level }}; //Values DEBUG  = 1;DEBUG
            //ERROR   = 4;ERROR// ...
            //FATAL   = 5;FATAL// Least Verbose
            //OFF   = 6;  //no log
-$CONFIG['DEBUG_FILE'] = '{{ laclasse_sso_log_file }}';
+$CONFIG['DEBUG_FILE'] = '{{ laclasse_sso_log_dir }}/sso.log';
 //----------------------------------------------------------------------
 
 /** Redis server array
@@ -147,7 +147,7 @@ include_once('lib/authentication.php');
 //Constantes de connexion avec WEBAPI
 //------------------------------------------------------------------------------
 /** Url for mysql apis */
-define('BACKEND_DBNAME', '{{ laclasse_main_url }}');
+define('BACKEND_DBNAME', '{{ laclasse_main_url }}/');
 /** Fake secret key */
 define('BACKEND_DBUSER', 'foobar');
 /** API access key */

@@ -17,5 +17,7 @@ galaxy_info:
     - development
 
 dependencies:
-  - role: erasme.php5-fpm
-  - role: erasme.simplesaml
+  - role: ansible-php5-fpm 
+    tags: laclasse:sso
+  - role: ansible-simplesaml
+    tags: laclasse:sso

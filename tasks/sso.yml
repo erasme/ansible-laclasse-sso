@@ -2,14 +2,14 @@
   apt: pkg=git state=latest
 
 - name: Creates deploy user
-  user: name={{ laclasse_sso_deploy_user }} comment="Service sso user"
+  user: name={{ laclasse_sso_deploy_user }} comment="laclasse user"
   notify: Restart php5-fpm
 
 - name: Creates deploy directory
   file:
-    path=~{{ laclasse_sso_deploy_user }}/sso/
-    owner={{ laclasse_sso_deploy_user }}
-    state=directory
+    path: "~{{ laclasse_sso_deploy_user }}/sso/"
+    owner: "{{ laclasse_sso_deploy_user }}"
+    state: directory
   notify: Restart php5-fpm
 
 - name: Checkout app
@@ -78,11 +78,20 @@
     - nginx
     - laclasse:saml
 
+- name: Creates log directory
+  file:
+    name: "{{ laclasse_sso_log_dir }}"
+    state: directory
+    owner: www-data
+    group: adm
+    mode: 0750
+
 - name: Symlinks configs
   file:
-    src=/etc/nginx/sites-available/{{inventory_hostname}}_laclasse-{{ item }}.conf
-    dest=/etc/nginx/sites-enabled/laclasse-{{ item }} state=link
-    backup=yes
+    src: /etc/nginx/sites-available/{{inventory_hostname}}_laclasse-{{ item }}.conf
+    dest: /etc/nginx/sites-enabled/laclasse-{{ item }}
+    state: link
+    backup: yes
   notify: Restart nginx
   with_items:
     - sso
@@ -150,3 +159,4 @@
   when: firewall_rules_file is defined and (needs_iptables_sso | changed or needs_iptables_saml | changed)
 
 - set_fact: check_port={{ laclasse_sso_port }}
+
