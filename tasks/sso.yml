@@ -95,7 +95,7 @@
   notify: Restart nginx
   with_items:
     - sso
-    - saml    
+    - saml
   tags:
     - nginx
 
@@ -139,11 +139,13 @@
 - name: Check if firewall is opened for sso
   shell: iptables-save
   register: needs_iptables_sso
+  when: firewall is defined
   changed_when: needs_iptables_sso.stdout.find("laclasse-sso") == -1
 
 - name: Check if firewall is opened for saml
   shell: iptables-save
   register: needs_iptables_saml
+  when: firewall is defined
   changed_when: needs_iptables_saml.stdout.find("laclasse-saml") == -1
 
 - name: Open sso firewall
@@ -152,7 +154,7 @@
 
 - name: Open saml firewall
   shell: iptables -I INPUT -p tcp -m tcp --dport {{ simplesaml_port }} -j ACCEPT -m comment --comment laclasse-saml
-  when: needs_iptables_saml | changed 
+  when: needs_iptables_saml | changed
 
 - name: Saves firewall
   shell: iptables-save > {{ firewall_rules_file }}
