@@ -14,7 +14,7 @@ $config = array (
    * Setup the following parameters to match the directory of your installation.
    * See the user manual for more details.
    */
-  'baseurlpath' => '{{ laclasse_main_domain }}{{ simplesaml_path }}',
+  'baseurlpath' => '{{ laclasse_main_url }}/{{ simplesaml_path }}/',
   'certdir'     => 'cert/',
   'loggingdir'  => 'log/',
   'datadir'     => 'data/',
@@ -188,7 +188,7 @@ $config = array (
    * Example:
    *  'session.cookie.domain' => '.example.org',
    */
-  'session.cookie.domain' => '{{ laclasse_cookie_domain }}',
+  'session.cookie.domain' => '{{ simplesaml_cookie_domain }}',
 
   /*
    * Set the secure flag in the cookie.
@@ -202,7 +202,7 @@ $config = array (
   /*
    * Options to override the default settings for php sessions.
    */
-  'session.phpsession.cookiename'  => '{{ simplesaml_cookiename }}',
+  'session.phpsession.cookiename'  => '{{ simplesaml_cookie_name }}',
   'session.phpsession.savepath'    => null,
   'session.phpsession.httponly'    => FALSE,
 

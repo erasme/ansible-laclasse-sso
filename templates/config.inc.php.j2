@@ -21,11 +21,11 @@ include_once('config.inc.sites.php');
  */
 define('CAS_PATH', '/home/{{ laclasse_sso_deploy_user }}/sso/');
 define('SimpleSamlPATH', '{{ simplesaml_install_directory }}/simplesamlphp-{{ simplesaml_version }}/lib');
-define('ENT_SERVER', '{{ laclasse_main_url }}');
+define('ENT_SERVER', '{{ laclasse_main_url }}/');
 
-#define('CAS_URL', '{{ laclasse_main_url }}/{{ laclasse_sso_baseurl }} | regex_replace('\/+$', "")');
-# Let's get a proper url, without double-slashes
-#define('CAS_URL', '{{ "%s/%s"|format(laclasse_main_url, laclasse_sso_baseurl) | regex_replace("\/+", "/") | regex_replace(":\/", "://") | regex_replace("\/$", "")}}' );
+// define('CAS_URL', '{{ laclasse_main_url }}/{{ laclasse_sso_baseurl }} | regex_replace('\/+$', "")');
+// Let's get a proper url, without double-slashes
+// define('CAS_URL', '{{ "%s/%s"|format(laclasse_main_url, laclasse_sso_baseurl) | regex_replace("\/+", "/") | regex_replace(":\/", "://") | regex_replace("\/$", "")}}' );
 
 define('CAS_URL', '{{ url.trim_trailing_slashes(url.dedup_slashes(laclasse_main_url, laclasse_sso_baseurl)) }}' );
 

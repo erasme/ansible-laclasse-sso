@@ -24,6 +24,7 @@
 
 - name: Gets current tag
   shell: cd ~{{ laclasse_sso_deploy_user }}/sso/ && git describe --always --tag
+  always_run: yes
   changed_when: false
   register: git_tag
 

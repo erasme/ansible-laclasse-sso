@@ -6,7 +6,7 @@ laclasse_slack:
 
 laclasse_admin_email: some@admin.org
 
-laclasse_annuaire_sso_api_url: '/api/sso'
+laclasse_annuaire_sso_api_url: 'api/sso'
 laclasse_annuaire_user_api_url: 'api/app/users/'
 
 laclasse_certificate_chain: |
@@ -50,12 +50,17 @@ laclasse_main_url: https://{{ laclasse_main_domain }}/
 laclasse_redis_server: 'localhost'
 laclasse_redis_port: 6379
 
+laclasse_services:
+  sso:
+    app_id: 'SSO'
+    description: "Single sign on server"
+    path: '/'
+    title: "Serveur SSO"
+
 # laclasse-sso specific variables
-laclasse_sso_app_id: 'SSO'
 laclasse_sso_baseurl: '/sso'
 
 laclasse_sso_deploy_user: someuser
-laclasse_sso_description: "Single sign on server"
 laclasse_sso_display_news: true
 # Running mode :
 # 'dev'   : http protocol allowed
@@ -65,7 +70,6 @@ laclasse_sso_mode: 'dev'
 # Debug level & file
 laclasse_sso_log_dir: "{{ laclasse_log_parent_dir }}/sso/"
 laclasse_sso_log_level: 5
-laclasse_sso_path: '/'
 
 # this is the local internal port (e.g. on the frontend itself)
 laclasse_sso_port: 42550
@@ -77,7 +81,6 @@ laclasse_sso_repos: https://github.com/laclasse-com/php-cas-server.git
 
 laclasse_sso_secret_key: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 
-laclasse_sso_title: "Serveur SSO"
 
 laclasse_sso_twitter:
 laclasse_sso_twitter_account: '@someaccount'

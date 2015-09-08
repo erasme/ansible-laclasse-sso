@@ -22,6 +22,7 @@
     msg: "sso (version {{ git_tag.stdout }} successfully deployed on {{ inventory_hostname }} :thumbsup:"
     channel: "{{ laclasse_slack.channel }}"
   ignore_errors: true
+  when: git_tag is defined and "stdout" in git_tag
   tags:
     - laclasse
     - laclasse:sso
