@@ -16,10 +16,10 @@
   sudo_user: "{{ laclasse_sso_deploy_user }}"
   sudo: true
   git:
-    repo={{ laclasse_sso_repos }}
-    dest=~{{ laclasse_sso_deploy_user }}/sso/
-    version={{ laclasse_sso_version }}
-    accept_hostkey=true
+    repo: "{{ laclasse_sso_repos }}"
+    dest: "~{{ laclasse_sso_deploy_user }}/sso/"
+    version: "{{ laclasse_sso_version }}"
+    accept_hostkey: true
   register: new_version
 
 - name: Gets current tag
