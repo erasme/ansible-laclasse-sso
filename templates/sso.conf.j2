@@ -1,10 +1,14 @@
 # -*- mode: nginx; -*-
-
-# Nginx conf for laclasse-srevice-sso
+#
+#  ################################################
+#  #  Ansible Managed                             #
+#  #  ansible-laclasse-sso/templates/sso.conf.j2  #
+#  ################################################
+#
+# Nginx conf for laclasse-service-sso (SSO part)
 # Uses php5-fpm
 #
-# {{ ansible_managed }}
-#
+
 server {
   listen   {{ laclasse_sso_port }}; ## listen for ipv4; this line is default and implied
 

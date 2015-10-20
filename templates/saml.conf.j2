@@ -1,9 +1,12 @@
 # -*- mode: nginx; -*-
-
-# Nginx conf for laclasse-service-sso
-# Uses php5-fpm
 #
-# {{ ansible_managed }}
+#  #################################################
+#  #  Ansible Managed                              #
+#  #  ansible-laclasse-sso/templates/saml.conf.j2  #
+#  #################################################
+#
+# Nginx conf for laclasse-service-sso (SAML part)
+# Uses php5-fpm
 #
 
 server {
@@ -19,7 +22,6 @@ server {
   server_name _;
 
   rewrite_log off;
-
 
   error_page 404 /404.html;
 
